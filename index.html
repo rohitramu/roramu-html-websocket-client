@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous" />
+
+        <title>WebSocket Client</title>
+    </head>
+
+
+    <body style="min-width: 650px; max-height: 100%; height: fit-content;">
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+        <!-- WebSocket logic -->
+        <script src="websocket-client.js"></script>
+
+        <!-- Page layout -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <h1>WebSocket Client</h1>
+                </div>
+            </div>
+
+            <!-- Connect section -->
+            <div class="row">
+                <div class="col">
+                    <label>URL:</label>
+                    <input type="text" style="min-width: 250px; max-width: 300px; width: fit-content;" placeholder="ws://your.websocket.server/" id="url" value="wss://echo.websocket.org/" />
+                    <button style="min-width: fit-content;" onclick="connectDisconnect()" id="connectDisconnectButton">Connect</button>
+                    <label style="width:50px; color: red;" id="status">Disconnected</label>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Send section -->
+            <div class="row">
+                <div class="col">
+                    <h2 style="text-align: center;">Send</h2><br />
+                    <textarea style="width: 100%; height: auto;" disabled id="textToSend"></textarea><br />
+                    <button style="min-width: 80px; width: 100%;" onclick="sendMessage()" disabled id="sendButton">Send</button>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Receive section -->
+            <div class="row">
+                <div class="col-6">
+                    <table class="table table-dark table-striped" style="color: deepskyblue;">
+                        <thead style="text-align: center;"><th>Sent</th></thead>
+                        <tbody id="sendFeed"></tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <table class="table table-dark table-striped" style="color: deepskyblue;">
+                        <thead style="text-align: center;"><th>Received</th></thead>
+                        <tbody id="receiveFeed"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Error section -->
+            <div class="row">
+                <div class="col">
+                    <table class="table table-dark table-striped" style="color: yellow;">
+                        <thead style="text-align: center;"><th>Errors</th></thead>
+                        <tbody id="errorFeed"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden row element for the different feeds -->
+        <div hidden>
+            <table>
+                <tbody>
+                    <tr>
+                        <td id="rowTemplate">
+                            <p id='message'></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
