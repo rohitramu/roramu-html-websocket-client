@@ -27,8 +27,6 @@ function connectDisconnect() {
 function sendMessage() {
     var message = document.getElementById('textToSend').value;
     webSocket.send(message);
-
-    addMessageToFeed('sendFeed', message);
 }
 
 function onMessage(message) {
@@ -46,19 +44,18 @@ function onDisconnect() {
 function addMessageToFeed(feedName, message) {
     // Create the new row
     var newRow = document.getElementById('rowTemplate').cloneNode(true);
-    newRow.removeAttribute('id');
-    newRow.querySelector('#message').innerText = message;
+
+    var timestampCell = newRow.querySelector('#timestamp');
+    timestampCell.querySelector('#value').innerText = new Date().toLocaleString();
+
+    var messageCell = newRow.querySelector('#message');
+    messageCell.querySelector('#value').innerText = message;
 
     // Add the message to the receive feed
     feed = document.getElementById(feedName);
     var row = feed.insertRow(0);
-    row.appendChild(newRow);
-
-    // // Add the message to the receive feed
-    // table = document.getElementById(feedName);
-    // var row = table.insertRow(0);
-    // var newCell = document.createTextNode(message);
-    // row.appendChild(newCell);
+    row.appendChild(timestampCell);
+    row.appendChild(messageCell);
 }
 
 function updateReadyToSend() {

@@ -12,7 +12,7 @@
     </head>
 
 
-    <body style="min-width: 650px; max-height: 100%; height: fit-content;">
+    <body style="min-width: 650px; max-height: 100%; height: 100vh;">
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
@@ -20,17 +20,18 @@
 
         <!-- WebSocket logic -->
         <script src="websocket-client.js"></script>
+        <script src="renderjson.js"></script>
 
         <!-- Page layout -->
         <div class="container-fluid">
-            <div class="row">
+            <div class="row" style="height: fit-content">
                 <div class="col">
                     <h1>WebSocket Client</h1>
                 </div>
             </div>
 
-            <!-- Connect section -->
-            <div class="row">
+            <!-- Connect -->
+            <div class="row" style="height: fit-content">
                 <div class="col">
                     <label>URL:</label>
                     <input type="text" style="min-width: 250px; max-width: 300px; width: fit-content;" placeholder="ws://your.websocket.server/" id="url" value="wss://echo.websocket.org/" />
@@ -41,28 +42,24 @@
 
             <hr />
 
-            <!-- Send section -->
-            <div class="row">
+            <!-- Send -->
+            <div class="row" style="height: fit-content">
                 <div class="col">
-                    <h2 style="text-align: center;">Send</h2><br />
-                    <textarea style="width: 100%; height: auto;" disabled id="textToSend"></textarea><br />
+                    <textarea style="width: 100%; min-height: 10rem; height: auto; overflow: scroll; white-space: pre;" disabled id="textToSend"></textarea><br />
                     <button style="min-width: 80px; width: 100%;" onclick="sendMessage()" disabled id="sendButton">Send</button>
                 </div>
             </div>
 
             <hr />
 
-            <!-- Receive section -->
-            <div class="row">
-                <div class="col-6">
-                    <table class="table table-dark table-striped" style="color: deepskyblue;">
-                        <thead style="text-align: center;"><th>Sent</th></thead>
-                        <tbody id="sendFeed"></tbody>
-                    </table>
-                </div>
-                <div class="col-6">
-                    <table class="table table-dark table-striped" style="color: deepskyblue;">
-                        <thead style="text-align: center;"><th>Received</th></thead>
+            <!-- Receive feed -->
+            <div class="row" style="height: 45vh;">
+                <div class="col" style="overflow: auto;">
+                    <table class="table table-dark table-striped table-bordered" style="color: deepskyblue;">
+                        <thead style="text-align: center;">
+                            <th>Timestamp</th>
+                            <th style="width: 100%">Received</th>
+                        </thead>
                         <tbody id="receiveFeed"></tbody>
                     </table>
                 </div>
@@ -71,7 +68,7 @@
             <hr />
 
             <!-- Error section -->
-            <div class="row">
+            <div class="row" style="height: 15vh">
                 <div class="col">
                     <table class="table table-dark table-striped" style="color: yellow;">
                         <thead style="text-align: center;"><th>Errors</th></thead>
@@ -85,9 +82,12 @@
         <div hidden>
             <table>
                 <tbody>
-                    <tr>
-                        <td id="rowTemplate">
-                            <p id='message'></p>
+                    <tr id="rowTemplate">
+                        <td style="vertical-align: middle;" id="timestamp">
+                            <code id="value"></code>
+                        </td>
+                        <td style="vertical-align: middle;" id="message">
+                            <code id="value"></code>
                         </td>
                     </tr>
                 </tbody>
