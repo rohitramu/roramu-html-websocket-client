@@ -1,4 +1,7 @@
 var webSocket = null;
+var sendFeedName = 'sendFeed';
+var receiveFeedName = 'receiveFeed';
+var errorFeedName = 'errorFeed';
 
 function connectDisconnect() {
     // Get URL text box
@@ -27,14 +30,16 @@ function connectDisconnect() {
 function sendMessage() {
     var message = document.getElementById('textToSend').value;
     webSocket.send(message);
+
+    addMessageToFeed(sendFeedName, message);
 }
 
 function onMessage(message) {
-    addMessageToFeed('receiveFeed', message);
+    addMessageToFeed(receiveFeedName, message);
 }
 
 function onError(error) {
-    addMessageToFeed('errorFeed', error);
+    addMessageToFeed(errorFeedName, error);
 }
 
 function onDisconnect() {
@@ -42,14 +47,22 @@ function onDisconnect() {
 }
 
 function addMessageToFeed(feedName, message) {
+    // Prettify the message if it is valid JSON
+    var toShow = null;
+    try {
+        toShow = JSON.stringify(JSON.parse(message), null, 4);
+    } catch (ex) {
+        toShow = message;
+    }
+
     // Create the new row
     var newRow = document.getElementById('rowTemplate').cloneNode(true);
 
     var timestampCell = newRow.querySelector('#timestamp');
-    timestampCell.querySelector('#value').innerText = new Date().toLocaleString();
+    timestampCell.querySelector('#value').innerText = new Date().toLocaleString().split(", ", 2).join("\n");
 
     var messageCell = newRow.querySelector('#message');
-    messageCell.querySelector('#value').innerText = message;
+    messageCell.querySelector('#value').innerText = toShow;
 
     // Add the message to the receive feed
     feed = document.getElementById(feedName);
@@ -76,6 +89,10 @@ function updateReadyToSend() {
 
         connectionStatusLabel.style.color = 'green';
         connectionStatusLabel.innerText = 'Connected';
+
+        // Clear send/receive feeds
+        clearFeed(sendFeedName);
+        clearFeed(receiveFeedName);
     } else {
         urlBox.disabled = false;
         textToSendBox.disabled = true;
@@ -88,4 +105,8 @@ function updateReadyToSend() {
 
         webSocket = null;
     }
+}
+
+function clearFeed(feedName) {
+    document.getElementById(feedName).innerHTML = "";
 }
