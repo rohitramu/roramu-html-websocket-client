@@ -20,7 +20,6 @@
 
         <!-- WebSocket logic -->
         <script src="websocket-client.js"></script>
-        <script src="renderjson.js"></script>
 
         <!-- Page layout -->
         <div class="container-fluid">
@@ -66,7 +65,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="col" style="overflow-y: scroll;">
+                <div class="col">
                     <h2 style="text-align: center;">Received</h2>
                     <div style="overflow-y: scroll; height: 45vh;">
                         <table class="table table-striped table-bordered" style="color: deepskyblue; table-layout: fixed;">
@@ -82,17 +81,17 @@
 
             <hr />
 
-            <!-- Errors -->
+            <!-- Log -->
             <div class="row">
                 <div class="col">
-                    <h2 style="text-align: center; color: red;">Errors</h2>
-                    <div style="overflow-y: scroll; height: 20vh;">
+                    <h2 style="text-align: center;">Log</h2>
+                    <div style="overflow-y: scroll;">
                         <table class="table table-striped table-bordered" style="color: deepskyblue; table-layout: fixed;">
                             <thead style="text-align: center;">
                                 <th style="width: 10rem">Timestamp</th>
-                                <th>Errors</th>
+                                <th>Message</th>
                             </thead>
-                            <tbody id="errorFeed"></tbody>
+                            <tbody id="logFeed"></tbody>
                         </table>
                     </div>
                 </div>

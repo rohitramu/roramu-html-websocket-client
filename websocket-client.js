@@ -1,7 +1,7 @@
 var webSocket = null;
 var sendFeedName = 'sendFeed';
 var receiveFeedName = 'receiveFeed';
-var errorFeedName = 'errorFeed';
+var logFeedName = 'logFeed';
 
 function connectDisconnect() {
     try {
@@ -10,17 +10,16 @@ function connectDisconnect() {
             // If we don't have a connection, try to connect
             var urlBox = document.getElementById('url');
             webSocket = new WebSocket(urlBox.value);
-            webSocket.onopen = event => updateReadyToSend();
-            webSocket.onclose = event => onDisconnect(event.reason);
-            webSocket.onerror = event => onError(event.target);
+            webSocket.onopen = onOpen;
+            webSocket.onclose = onClose;
             webSocket.onmessage = event => onMessage(event.data);
         } else {
-            // We have a connection, so disconnect
+            // If we have a connection, disconnect
             if (webSocket) { webSocket.close(); }
             webSocket = null;
         }
     } catch (ex) {
-        onError(ex);
+        onError(JSON.stringify(ex));
     } finally {
         // Update the UI to reflect whether we successfully connected
         updateReadyToSend();
@@ -38,21 +37,31 @@ function onMessage(message) {
     addMessageToFeed(receiveFeedName, message);
 }
 
-function onError(error) {
-    addMessageToFeed(errorFeedName, error);
+function onError(message) {
+    addMessageToFeed(logFeedName, '[ERROR] ' + message);
 }
 
-function onDisconnect() {
+function onOpen() {
+    addMessageToFeed(logFeedName, '[CONNECTED] ' + webSocket.url);
+    updateReadyToSend();
+}
+
+function onClose(closeEvent) {
+    addMessageToFeed(logFeedName, '[DISCONNECTED] ' + closeEvent.target.url + (closeEvent.reason || closeEvent.code ? ': [' + closeEvent.code + '] ' + closeEvent.reason : ''));
     updateReadyToSend();
 }
 
 function addMessageToFeed(feedName, message) {
     // Prettify the message if it is valid JSON
     var toShow = null;
-    try {
-        toShow = JSON.stringify(JSON.parse(message), null, 4);
-    } catch (ex) {
-        toShow = message;
+    if (typeof message === 'string' || message instanceof String) {
+        try {
+            toShow = JSON.stringify(JSON.parse(message), null, 4);
+        } catch (ex) {
+            toShow = message;
+        }
+    } else {
+        toShow = JSON.stringify(message);
     }
 
     // Create the new row
