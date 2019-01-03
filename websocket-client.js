@@ -4,19 +4,19 @@ var receiveFeedName = 'receiveFeed';
 var errorFeedName = 'errorFeed';
 
 function connectDisconnect() {
-    // Get URL text box
-    var urlBox = document.getElementById('url');
-
     try {
-        if (!webSocket) {
+        if (!webSocket ||
+            (webSocket.readyState !== WebSocket.OPEN && webSocket.readyState !== WebSocket.CONNECTING)) {
             // If we don't have a connection, try to connect
+            var urlBox = document.getElementById('url');
             webSocket = new WebSocket(urlBox.value);
+            webSocket.onopen = event => updateReadyToSend();
             webSocket.onclose = event => onDisconnect(event.reason);
             webSocket.onerror = event => onError(event.target);
             webSocket.onmessage = event => onMessage(event.data);
         } else {
             // We have a connection, so disconnect
-            webSocket.close();
+            if (webSocket) { webSocket.close(); }
             webSocket = null;
         }
     } catch (ex) {
@@ -80,7 +80,7 @@ function updateReadyToSend() {
     var connectDisconnectButton = document.getElementById('connectDisconnectButton');
 
     // If we're ready to send, disable the URL text box, enable the send box and enable the send button (otherwise, do the opposite)
-    if (webSocket) {
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
         urlBox.disabled = true;
         textToSendBox.disabled = false;
         sendButton.disabled = false;
@@ -93,6 +93,15 @@ function updateReadyToSend() {
         // Clear send/receive feeds
         clearFeed(sendFeedName);
         clearFeed(receiveFeedName);
+    } else if (webSocket && webSocket.readyState == WebSocket.CONNECTING) {
+        urlBox.disabled = true;
+        textToSendBox.disabled = true;
+        sendButton.disabled = true;
+
+        connectDisconnectButton.innerText = 'Cancel';
+
+        connectionStatusLabel.style.color = 'yellow';
+        connectionStatusLabel.innerText = 'Connecting...';
     } else {
         urlBox.disabled = false;
         textToSendBox.disabled = true;
